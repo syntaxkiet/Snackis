@@ -1,0 +1,34 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Welcome to our multimedia discussion forum! Here, we dive into the dynamic world of multimedia, where creativity intersects with technology to deliver captivating experiences. Whether you're a seasoned professional, an aspiring artist, or simply curious about the latest trends, this forum is your space to explore, share insights, and collaborate with fellow enthusiasts. From digital art and video production to interactive storytelling and virtual reality, let's embark on a journey to unravel the possibilities and potential of multimedia together. Join the conversation and let your imagination thrive in this vibrant community!</a></p>
+</div>
+
+
+<h2>Latest posts</h2>
+<br />
+
+<div class="container position-relative">
+    <div class="row justify-content-center">
+    @if (Model.Posts != null)
+    {
+            Model.Posts = Model.Posts.OrderByDescending(x => x.CreatedAt).ToList();
+
+            for (int i = 0; i < 8; i++)
+            {
+                <div class="card m-2" style="width: 18rem">
+                    <div class="card-body">
+                        <p class="card-text">@Model.Posts[i].Text</p>
+                    </div>
+                    <p class="card-footer">@Model.Posts[i].CreatedAt</p>
+                </div>
+            }
+    }
+    </div>
+</div>

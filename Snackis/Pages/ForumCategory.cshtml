@@ -1,0 +1,75 @@
+﻿@page
+@using Models
+@model Snackis.Pages.ForumCategoryModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center">
+                <h1>@Model.CategoryName</h1>
+            </div>
+
+            <div class="row mt-4">
+                @if (Model.Threads != null && Model.Threads.Any())
+                {
+                    @foreach (var thread in Model.Threads)
+                    {
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a asp-page="/ForumThread" asp-route-ID="@thread.Id">@thread.Title</a>
+                                    </h5>
+                                    <p class="card-text">Created by: @UserManager.Users.FirstOrDefault(u => u.Id == thread.Author)?.Nickname</p>
+                                    <p class="card-text">Date created: @thread.CreatedAt.ToString("MMMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-md-12">
+                        <div class="alert alert-info" role="alert">
+                            No threads found in this category.
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Create a new thread</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label asp-for="Thread.Title">Title:</label>
+                                <textarea asp-for="Thread.Title" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="Thread.Title" class="text-danger"></span>
+                            </div>
+                            <div class="form-group text-right">
+                                <br />
+                                <button type="submit" class="btn btn-primary">Create Thread</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info mt-4" role="alert">
+                    Please <a href="/Identity/Account/Login">log in</a> or <a href="/Identity/Account/Register">register</a> to create a new thread.
+                </div>
+            }
+        </div>
+    </div>
+</div>

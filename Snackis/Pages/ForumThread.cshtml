@@ -1,0 +1,94 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@using Snackis.Models
+@model Snackis.Pages.ForumThreadModel
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<div class="text-center">
+    <h1>@Model.ThreadName</h1>
+</div>
+
+<div class="container mt-4">
+    @if (Model.Posts != null)
+    {
+        @foreach (var post in Model.Posts)
+        {
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <img src="~/img/@UserManager.Users.FirstOrDefault(u => u.Id == post.Author).ProfileImage" class="rounded" alt="Profile Image" style="max-width: 150px; max-height: 150px;">
+                        <h5 class="mb-0 ms-2">@UserManager.Users.FirstOrDefault(u => u.Id == post.Author).Nickname</h5> 
+                    </div>
+                    <small class="text-muted">@post.CreatedAt</small>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@post.Text</p>
+                    @if (user != null && user.Id == post.Author || User.IsInRole("admin"))
+                    {
+                        <form method="post" asp-page-handler="Delete" class="d-flex justify-content-end">
+                            <input type="hidden" asp-for="CurrentThread" />
+                            <input type="hidden" name="deleteId" value="@post.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                        <br />
+                    }
+                    @{
+                        if (post.isFlagged == 1)
+                        {
+                            <p style="color:red"><i>This post has been reported by a user</i></p>
+                        }
+                        else if (SignInManager.IsSignedIn(User))
+                        {
+                            <form method="post" asp-page-handler="Edit" class="d-flex justify-content-end">
+                                <input type="hidden" asp-for="CurrentThread" />
+                                <input type="hidden" name="editId" value="@post.Id" />
+                                <button type="submit" class="btn btn-warning btn-sm">Report</button>
+                            </form>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="mx-auto col-6 mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Post a new message</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="CurrentThread" />
+                    <div class="form-group">
+                        <label asp-for="Post.Text"></label>
+                        <textarea asp-for="Post.Text" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Post.Text" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-group text-right">
+                        <input type="submit" class="btn btn-success" value="Save Post" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info mt-4" role="alert">
+        Please <a href="/Identity/Account/Login">log in</a> or <a href="/Identity/Account/Register">register</a> to post in this thread.
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

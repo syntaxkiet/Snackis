@@ -1,0 +1,57 @@
+﻿@page
+@model Snackis.Pages.ProfileModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h2 class="text-center">Welcome to your profile!</h2>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                Profile Picture
+            </div>
+            <div class="card-body text-center">
+                <img src="~/img/@Model.appUser?.ProfileImage" class="img-fluid rounded-circle mb-3" alt="Profile Picture" style="max-width: 150px; max-height: 150px;">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="file" class="form-control-file" id="profileImage" name="profileImage">
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                User Information
+            </div>
+            <div class="card-body">
+                <div>
+                    <strong>Username:</strong> @Model.appUser?.Nickname
+                </div>
+                <div>
+                    <strong>First Name:</strong> @Model.appUser?.FirstName
+                </div>
+                <div>
+                    <strong>Last Name:</strong> @Model.appUser?.LastName
+                </div>
+                <div>
+                    <strong>Email:</strong> @Model.appUser?.Email
+                </div>
+                <div>
+                    <strong>Phone:</strong> @Model.appUser?.PhoneNumber
+                </div>
+                <div>
+                    <strong>Account Created At:</strong> @Model.appUser?.CreatedAt.ToString("MM/dd/yyyy")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
