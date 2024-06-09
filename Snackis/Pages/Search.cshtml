@@ -1,0 +1,60 @@
+﻿@page
+@model Snackis.Pages.SearchModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Models.User> SignInManager
+@inject UserManager<Models.User> UserManager
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h1>Search</h1>
+
+<form method="get">
+    <div class="form-group">
+        <label for="query">Search</label>
+        <input type="text" id="query" name="query" class="form-control" value="@Model.Query" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<br />
+
+@if (Model.Categories.Any())
+{
+    <h2>Categories</h2>
+    <ul>
+        @foreach (var category in Model.Categories)
+        {
+            <li>@category.Name</li>
+        }
+    </ul>
+}
+
+@if (Model.Threads.Any())
+{
+    <h2>Threads</h2>
+    <ul>
+        @foreach (var thread in Model.Threads)
+        {
+            <li>@thread.Title</li>
+        }
+    </ul>
+}
+
+@if (Model.Posts.Any())
+{
+    <h2>Posts</h2>
+    <ul class="list-group">
+        @foreach (var post in Model.Posts)
+        {
+            <li class ="list-group-item border-2">
+                Thread Name: "@Model.GetThreadName(post.ThreadId)" 
+                    <br />
+                Content: "@post.Text" <br />
+                Posted by: @UserManager.Users.FirstOrDefault(u => u.Id == post.Author).Nickname <br />
+                Created at: @post.CreatedAt
+            </li>
+        }
+    </ul>
+}

@@ -1,5 +1,30 @@
 ﻿@page
 @model Snackis.Pages.MessagesModel
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<Models.User> UserManager
+@inject SignInManager<Models.User> SignInManager
 @{
+    ViewData["Title"] = "Private Messages";
 }
-<h2>View your messages here</h2>
+
+<h1>Private Messages</h1>
+
+<a class="btn btn-primary mb-3" asp-page="/CreateMessage">Compose</a>
+
+@if (Model.PrivateMessages.Any())
+{
+    <ol class="list-group">
+        @foreach (var message in Model.PrivateMessages)
+        {
+            <li class="list-group-item mb-2 border">
+                <strong>Subject:</strong> @message.Subject <br />
+                <strong>Sender:</strong> @UserManager.Users.FirstOrDefault(x => x.Id == message.SenderId)?.Nickname <br />
+                <strong>Message:</strong> @message.Message
+            </li>
+        }
+    </ol>
+}
+else
+{
+    <p>No private messages found.</p>
+}

@@ -14,6 +14,7 @@ namespace Snackis.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Models.Thread> Threads { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<PrivateMessage> PrivateMessages {  get; set; } 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

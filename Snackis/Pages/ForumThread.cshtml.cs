@@ -70,7 +70,7 @@ namespace Snackis.Pages
                 await _context.SaveChangesAsync();
             }
             Posts = await _context.Posts.Where(p => p.ThreadId == CurrentThread).ToListAsync();
-            int x = 0;
+
             return RedirectToPage("ForumThread", new { id = CurrentThread });
         }
 
